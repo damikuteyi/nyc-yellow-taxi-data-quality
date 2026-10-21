@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local datasets
+data/
+*.parquet
+
+# Environment variables and secrets
+.env
+
+# Editor settings
+.vscode/
