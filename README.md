@@ -118,6 +118,7 @@ The python script includes reusable functions to identify:
 Run the checks with:
 ```bash
 python inspect_taxi_data.py
+```
 
 ## Next Steps
 
