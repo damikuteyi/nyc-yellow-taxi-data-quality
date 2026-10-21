@@ -27,12 +27,8 @@ print((taxi_data["fare_amount"] < 0).sum())
 
 print("\nZero trip distances:")
 print((taxi_data["trip_distance"] == 0).sum())
-'''
-
 
 negative_fares = taxi_data[taxi_data["fare_amount"] < 0]
-
-'''
 print("\nFirst 10 records with negative fares:")
 print(
     negative_fares[
@@ -70,8 +66,7 @@ print((taxi_data["trip_duration_minutes"] < 0).sum())
 
 print("\nTrips with zero duration:")
 print((taxi_data["trip_duration_minutes"] == 0).sum())
-'''
-'''
+
 print("\n10 shortest trip durations:")
 
 print(
@@ -103,7 +98,7 @@ print("\nTrip duration validation:")
 print("Valid positive durations:", valid_duration_count)
 print("Zero durations:", zero_duration_count)
 print("Negative durations:", negative_duration_count)
-'''
+
 
 taxi_data["valid_timestamp_order"] = (
     taxi_data["tpep_dropoff_datetime"]
@@ -112,3 +107,30 @@ taxi_data["valid_timestamp_order"] = (
 
 print("\nTimestamp validation results:")
 print(taxi_data["valid_timestamp_order"].value_counts())
+'''
+
+def check_negative_fares(df):
+    negative_fares = df["fare_amount"] < 0
+    count = negative_fares.sum()
+    print("Negative fare amounts:", count)
+    return count
+
+
+
+def check_zero_distances(df):
+    zero_distance_count = df[df["trip_distance"] == 0].shape[0]
+    print("Zero trip distances:", zero_distance_count)
+    return zero_distance_count
+
+
+
+def check_negative_durations(df):
+   # duration = (df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]).dt.total_seconds() / 60
+    negative_duration = df["trip_duration_minutes"] < 0
+    count = negative_duration.sum()
+    print("Negative trip durations:", count)
+    return count
+
+check_negative_fares(taxi_data)
+check_zero_distances(taxi_data)
+check_negative_durations(taxi_data)

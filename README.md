@@ -109,6 +109,15 @@ The project follows a cautious data quality workflow:
 6. Document findings before implementing any cleaning rules.
 
 The original source data is preserved. No records are deleted or modified as part of this initial assessment.
+## Automated Data Quality Checks
+The python script includes reusable functions to identify:
+- Negative fare amounts
+- Zero trip distances
+- Negative trip durations
+
+Run the checks with:
+```bash
+python inspect_taxi_data.py
 
 ## Next Steps
 
@@ -116,9 +125,9 @@ The original source data is preserved. No records are deleted or modified as par
 - Analyse negative fares by payment type.
 - Examine zero-distance trips.
 - Investigate negative-duration records.
-- Implement reusable data quality checks.
+- Implement reusable data quality checks. (done)
 - Extend the project into a reproducible data ingestion and transformation pipeline.
 
 ## Project Status
 
-**Milestone 1:** Initial data profiling and data quality documentation.
+**Milestone 1:** Initial data profiling and data quality documentation. (done)
