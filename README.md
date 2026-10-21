@@ -62,11 +62,9 @@ These findings identify records that require further investigation. They do not 
 ### 1. Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd ai-data-engineering-portfolio-dk
+git clone https://github.com/damikuteyi/nyc-yellow-taxi-data-quality.git
+cd nyc-yellow-taxi-data-quality
 ```
-
-Replace `YOUR_GITHUB_REPOSITORY_URL` with your repository's actual URL.
 
 ### 2. Create and activate a virtual environment
 
