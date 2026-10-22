@@ -4,10 +4,13 @@ import pandas as pd
 file_path = "data/yellow_tripdata_2025-01.parquet"
 taxi_data = pd.read_parquet(file_path)
 
-# 2. Calculate trip duration in minutes
+# 2. Show Dataframe shape, missing values, and calculate trip duration in minutes
 print(taxi_data.shape)
-missing_values = taxi_data.isnull().sum() 
-print(missing_values[missing_values > 0])
+missing_summary = taxi_data.isnull().sum().to_frame(name="missing_count")
+missing_summary["missing_percentage"] = (
+    missing_summary["missing_count"] / len(taxi_data) * 100
+    )
+print(missing_summary[missing_summary["missing_count"]> 0])
 
 taxi_data["trip_duration_minutes"] = (
     taxi_data["tpep_dropoff_datetime"]
