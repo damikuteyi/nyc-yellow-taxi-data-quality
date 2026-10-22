@@ -1,11 +1,12 @@
 import pandas as pd
 
-# 1. Load the dataset
+# 1. Load the dataset, show overview
 file_path = "data/yellow_tripdata_2025-01.parquet"
 taxi_data = pd.read_parquet(file_path)
-
-# 2. Show Dataframe shape, missing values, and calculate trip duration in minutes
 print(taxi_data.shape)
+
+# 2. Show missing values, and calculate trip duration in minutes
+
 missing_summary = taxi_data.isnull().sum().to_frame(name="missing_count")
 missing_summary["missing_percentage"] = (
     missing_summary["missing_count"] / len(taxi_data) * 100
