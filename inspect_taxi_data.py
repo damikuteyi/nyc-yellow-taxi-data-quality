@@ -5,6 +5,10 @@ file_path = "data/yellow_tripdata_2025-01.parquet"
 taxi_data = pd.read_parquet(file_path)
 
 # 2. Calculate trip duration in minutes
+print(taxi_data.shape)
+missing_values = taxi_data.isnull().sum() 
+print(missing_values[missing_values > 0])
+
 taxi_data["trip_duration_minutes"] = (
     taxi_data["tpep_dropoff_datetime"]
     - taxi_data["tpep_pickup_datetime"]
