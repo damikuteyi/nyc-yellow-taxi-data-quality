@@ -11,7 +11,14 @@ missing_summary = taxi_data.isnull().sum().to_frame(name="missing_count")
 missing_summary["missing_percentage"] = (
     missing_summary["missing_count"] / len(taxi_data) * 100
     )
-print(missing_summary[missing_summary["missing_count"]> 0])
+missing_summary = missing_summary[missing_summary["missing_count"]> 0]
+if len(missing_summary) == 0:
+    print("PASS: No missing values found")
+else:
+    print("WARNING: Missing values detected")
+print("\nMISSING VALUES REPORT")
+print("==========================")
+print(missing_summary)
 
 taxi_data["trip_duration_minutes"] = (
     taxi_data["tpep_dropoff_datetime"]
@@ -54,12 +61,26 @@ def check_negative_durations(df):
         "status": "requires investigation",
     }
 
+def check_missing_values(df):
+    count = df.isnull().sum().sum()
+    if count == 0:
+        status = "PASS"
+    else:
+        status = "WARNING"
+    return {
+        "check_name": "missing_values",
+        "description": "count missing cells across all columns",
+        "records_affected": int(count),
+        "status": status
+    }
+
 
 # 4. Run checks and generate the report
 quality_results = [
     check_negative_fares(taxi_data),
     check_zero_distances(taxi_data),
     check_negative_durations(taxi_data),
+    check_missing_values(taxi_data)
 ]
 
 print("DATA QUALITY REPORT")

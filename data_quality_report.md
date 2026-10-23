@@ -58,7 +58,7 @@ Trip duration was calculated as the difference between the drop-off and pickup t
 
 ## 5. Automated Data Quality Checks
 
-Three reusable Python functions have been implemented to identify potential data quality issues in the dataset.
+Four reusable Python functions have been implemented to identify potential data quality issues in the dataset.
 
 Each function returns a structured dictionary containing four fields:
 
@@ -69,7 +69,7 @@ Each function returns a structured dictionary containing four fields:
 | `records_affected` | Records the number of rows matching the condition |
 | `status` | Indicates that the identified records require investigation |
 
-The results from the three checks are collected into a single list called `quality_results`. A Python loop then generates a consistent, human-readable report.
+The results from the four checks are collected into a single list called `quality_results`. A Python loop then generates a consistent, human-readable report.
 
 ### Check Results
 
@@ -78,6 +78,7 @@ The results from the three checks are collected into a single list called `quali
 | Negative fare amounts | 144,118 | Requires investigation |
 | Zero trip distances | 90,893 | Requires investigation |
 | Negative trip durations | 124 | Requires investigation |
+| Missing values | 2,700,745 missing cells| WARNING - one or more missing cells detected |
 
 ### Implementation Notes
 
@@ -85,6 +86,8 @@ The results from the three checks are collected into a single list called `quali
 - Trip duration is calculated in the existing `trip_duration_minutes` column and reused by the negative-duration check.
 - Record counts are converted to standard Python integers to improve compatibility with reporting and serialization tools.
 - The checks identify potential anomalies but do not automatically delete or modify records.
+- The missing cells are not the same as distinct affected records, as a single trip can have missing values in multiple columns.
+- The missing-values check returns ´Pass´ when no missing cells are found and ´Warning´ when at least one missing cell is found
 
 These functions provide a foundation for extending the quality checks and integrating their results into a more automated data validation pipeline.
 
