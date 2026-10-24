@@ -61,16 +61,20 @@ def check_negative_durations(df):
     }
 
 def check_missing_values(df):
-    count = df.isnull().sum().sum()
-    if count == 0:
+    missing_cells = int(df.isnull().sum().sum())
+    affected_rows = int(df.isnull().any(axis=1).sum())
+
+    if missing_cells == 0:
         status = "PASS"
     else:
         status = "WARNING"
+
     return {
         "check_name": "missing_values",
-        "description": "count missing cells across all columns",
-        "records_affected": int(count),
-        "status": status
+        "description": "Count missing cells and affected rows",
+        "records_affected": affected_rows,
+        "missing_cells": missing_cells,
+        "status": status,
     }
 
 
@@ -86,7 +90,11 @@ print("DATA QUALITY REPORT")
 print("===================")
 
 for result in quality_results:
-    print("\nCheck:", result["check_name"])
-    print("Description:", result["description"])
-    print("Records affected:", result["records_affected"])
-    print("Status:", result["status"])
+    print(f"\nCheck: {result['check_name']}")
+    print(f"Description: {result['description']}")
+    print(f"Records affected: {result['records_affected']}")
+
+    if "missing_cells" in result:
+        print(f"Missing cells: {result['missing_cells']}")
+
+    print(f"Status: {result['status']}")

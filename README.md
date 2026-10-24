@@ -2,11 +2,11 @@
 
 ## Overview
 
-This project performs an initial data quality assessment of the January 2025 NYC Yellow Taxi trip dataset using Python and pandas.
+This project performs a data quality assessment of the January 2025 NYC Yellow Taxi trip dataset using Python and pandas.
 
-The goal is to identify missing values, unusual fare and distance values, and timestamp anomalies before making any data-cleaning decisions.
+The goal is to identify missing values, unusual fare and distance values, and timestamp anomalies before making data-cleaning decisions.
 
-This project demonstrates practical data engineering skills in data ingestion, exploratory data analysis, data validation, and technical documentation.
+The project demonstrates practical data engineering skills in data ingestion, exploratory data analysis, data validation, and technical documentation.
 
 ## Dataset
 
@@ -16,7 +16,7 @@ This project demonstrates practical data engineering skills in data ingestion, e
 - **Records:** 3,475,226
 - **Columns:** 20
 
-The dataset is not included in this repository. Download the January 2025 Yellow Taxi Parquet file from the official source and place it in the `data/` directory.
+The dataset is not included in this repository. Download the January 2025 Yellow Taxi Parquet file from the official source and place it at `data/yellow_tripdata_2025-01.parquet`.
 
 ## Tools and Technologies
 
@@ -29,16 +29,19 @@ The dataset is not included in this repository. Download the January 2025 Yellow
 ## Project Structure
 
 ```text
-ai-data-engineering-portfolio-dk/
+nyc-yellow-taxi-data-quality/
 ├── data/
 │   └── yellow_tripdata_2025-01.parquet
 ├── .gitignore
+├── requirements.txt
 ├── inspect_taxi_data.py
+├── investigate_missing_values.py
+├── investigate_negative_fares.py
 ├── data_quality_report.md
 └── README.md
 ```
 
-The `data/` directory and virtual environment are excluded from version control.
+The Parquet dataset and virtual environment are excluded from version control. The dataset must be downloaded separately before running the analysis.
 
 ## Data Quality Findings
 
@@ -46,7 +49,7 @@ The initial assessment identified the following:
 
 | Check | Result |
 |---|---:|
-| Missing values in five columns | 540,149 per column |
+| Missing values in each of five columns | 540,149 |
 | Negative fare amounts | 144,118 |
 | Negative trip distances | 0 |
 | Zero trip distances | 90,893 |
@@ -55,7 +58,11 @@ The initial assessment identified the following:
 
 The five columns containing missing values are `passenger_count`, `RatecodeID`, `store_and_fwd_flag`, `congestion_surcharge`, and `Airport_fee`.
 
-These findings identify records that require further investigation. They do not automatically establish that those records are invalid.
+The missing-values investigation found that all 540,149 rows with these missing values have `payment_type = 0`. This association is documented for further interpretation; the cause and implications have not been established.
+
+The negative-fare investigation identified patterns across payment types and differences between recorded totals and calculated fare components. These findings require careful interpretation because negative fares and reconciliation differences do not, by themselves, prove that records are invalid.
+
+All findings are documented in `data_quality_report.md`.
 
 ## How to Run the Project
 
@@ -68,34 +75,45 @@ cd nyc-yellow-taxi-data-quality
 
 ### 2. Create and activate a virtual environment
 
-On Windows Command Prompt:
+On Windows PowerShell:
 
-```bat
+```powershell
 python -m venv .venv
-.venv\Scripts\activate.bat
+.\.venv\Scripts\Activate.ps1
 ```
 
 ### 3. Install dependencies
 
 ```bash
-python -m pip install pandas pyarrow
+python -m pip install -r requirements.txt
 ```
 
 ### 4. Download the dataset
 
-Download the January 2025 Yellow Taxi Parquet file from the official NYC TLC website and place it at:
+Download the January 2025 Yellow Taxi Parquet file from the [official NYC TLC source](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page).
+
+Place it at:
 
 ```text
 data/yellow_tripdata_2025-01.parquet
 ```
 
-Create the `data` directory if it does not already exist.
+Create the `data` directory if it does not exist.
 
-### 5. Run the analysis
+### 5. Run the data quality checks
 
 ```bash
 python inspect_taxi_data.py
 ```
+
+The script loads the dataset, calculates trip durations, and reports findings from four reusable checks:
+
+- Negative fare amounts
+- Zero trip distances
+- Negative trip durations
+- Missing values
+
+Additional investigation scripts examine missing-value patterns and negative fare records.
 
 ## Data Quality Approach
 
@@ -105,30 +123,26 @@ The project follows a cautious data quality workflow:
 2. Measure missing values.
 3. Identify unusual fare and trip-distance values.
 4. Calculate trip durations from pickup and drop-off timestamps.
-5. Flag timestamp anomalies for investigation.
-6. Document findings before implementing any cleaning rules.
+5. Investigate patterns in missing values and negative fares.
+6. Implement reusable validation checks.
+7. Document findings and limitations before applying cleaning rules.
 
-The original source data is preserved. No records are deleted or modified as part of this initial assessment.
-## Automated Data Quality Checks
-The python script includes reusable functions to identify:
-- Negative fare amounts
-- Zero trip distances
-- Negative trip durations
-
-Run the checks with:
-```bash
-python inspect_taxi_data.py
-```
-
-## Next Steps
-
-- Investigate patterns in missing values.
-- Analyse negative fares by payment type.
-- Examine zero-distance trips.
-- Investigate negative-duration records.
-- Implement reusable data quality checks. (done)
-- Extend the project into a reproducible data ingestion and transformation pipeline.
+The original source data is preserved. No records are automatically deleted or corrected as part of this assessment.
 
 ## Project Status
 
-**Milestone 1:** Initial data profiling and data quality documentation. (done)
+**Completed so far**
+
+- Initial dataset profiling
+- Reusable data quality checks
+- Missing-value investigation
+- Negative-fare investigation
+- Initial technical documentation
+- Dependency declaration in `requirements.txt`
+
+**Remaining work**
+
+- Add automated tests for the validation functions.
+- Finalise the reproducible pipeline and setup documentation.
+- Review the report and repository for consistency.
+- Complete the project documentation and portfolio presentation.

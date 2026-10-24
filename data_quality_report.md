@@ -51,6 +51,29 @@ No records have been deleted or modified as a result of this investigation.
 - No negative trip distances were identified.
 - Zero trip distances require further analysis to determine whether they represent legitimate records, data-entry issues, or other unusual trip circumstances.
 
+## Negative Fare Investigation
+
+### Findings
+
+The January 2025 NYC Yellow Taxi dataset contains **144,118 records with negative `fare_amount` values**.
+
+The investigation identified the following:
+
+- Negative fares occur across multiple payment types, including Flex Fare (`payment_type = 0`), cash, no charge and disputes.
+- Of the records with negative fares, 81,402 have a non-negative `total_amount`. Of these, 81,401 are associated with payment type 0.
+- The Flex Fare records examined show varied differences between `total_amount` and the sum of available fare components. The reconciliation differences are not consistently zero.
+- Some fare components are missing in these records, so the calculated component sum may not include every amount relevant to the recorded total.
+
+### Data Quality Assessment
+
+Negative fare values warrant investigation, but their presence alone does not establish that a record is invalid. The available analysis has not established the reason for every negative fare or the expected reconciliation rules for Flex Fare transactions.
+
+**Decision:** Retain negative fares as a validation finding for investigation rather than automatically deleting or correcting these records. Further interpretation would require authoritative documentation of the applicable fare and adjustment rules.
+
+### Limitation
+
+This investigation identifies patterns in the dataset but does not establish the cause of negative fares or prove that the associated total amounts are incorrect.
+
 ## 4. Trip Duration Checks
 
 Trip duration was calculated as the difference between the drop-off and pickup timestamps.
