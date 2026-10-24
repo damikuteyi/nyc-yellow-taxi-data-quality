@@ -1,29 +1,9 @@
+from pathlib import Path
 import pandas as pd
 
-# 1. Load the dataset, show overview
-file_path = "data/yellow_tripdata_2025-01.parquet"
-taxi_data = pd.read_parquet(file_path)
-print(taxi_data.shape)
-
-# 2. Show missing values, and calculate trip duration in minutes
-
-missing_summary = taxi_data.isnull().sum().to_frame(name="missing_count")
-missing_summary["missing_percentage"] = (
-    missing_summary["missing_count"] / len(taxi_data) * 100
-    )
-missing_summary = missing_summary[missing_summary["missing_count"]> 0]
-if len(missing_summary) == 0:
-    print("PASS: No missing values found")
-else:
-    print("WARNING: Missing values detected")
-print("\nMISSING VALUES REPORT")
-print("==========================")
-print(missing_summary)
-
-taxi_data["trip_duration_minutes"] = (
-    taxi_data["tpep_dropoff_datetime"]
-    - taxi_data["tpep_pickup_datetime"]
-).dt.total_seconds() / 60
+#Locate the project directory and dataset
+PROJECT_DIR = Path(__file__).resolve().parent
+DATA_PATH = PROJECT_DIR / "data" / "yellow_tripdata_2025-01.parquet"
 
 # 3. Reusable data quality checks
 def check_negative_fares(df):
@@ -37,7 +17,6 @@ def check_negative_fares(df):
         "status": "requires investigation",
     }
 
-
 def check_zero_distances(df):
     zero_distance_count = (df["trip_distance"] == 0).sum()
 
@@ -47,7 +26,6 @@ def check_zero_distances(df):
         "records_affected": int(zero_distance_count),
         "status": "requires investigation",
     }
-
 
 def check_negative_durations(df):
     negative_duration = df["trip_duration_minutes"] < 0
@@ -77,24 +55,42 @@ def check_missing_values(df):
         "status": status,
     }
 
+def main():
+    # 1. Load the dataset
+    print("Loading taxi dataset...")
 
-# 4. Run checks and generate the report
-quality_results = [
-    check_negative_fares(taxi_data),
-    check_zero_distances(taxi_data),
-    check_negative_durations(taxi_data),
-    check_missing_values(taxi_data)
-]
+    taxi_data = pd.read_parquet(DATA_PATH)
 
-print("DATA QUALITY REPORT")
-print("===================")
+    print(f"Dataset loaded: {taxi_data.shape[0]:,} rows, "
+          f"{taxi_data.shape[1]} columns")
+    
+    # 2. Calculate trip duration in minutes
+    taxi_data["trip_duration_minutes"] = (
+        taxi_data["tpep_dropoff_datetime"]
+        - taxi_data["tpep_pickup_datetime"]
+    ).dt.total_seconds() / 60
 
-for result in quality_results:
-    print(f"\nCheck: {result['check_name']}")
-    print(f"Description: {result['description']}")
-    print(f"Records affected: {result['records_affected']}")
+    # 3. Run the data quality checks
+    quality_results = [
+        check_negative_fares(taxi_data),
+        check_zero_distances(taxi_data),
+        check_negative_durations(taxi_data),
+        check_missing_values(taxi_data),
+    ]
 
-    if "missing_cells" in result:
-        print(f"Missing cells: {result['missing_cells']}")
+    # 4. Print the data quality report
+    print("\nDATA QUALITY REPORT")
+    print("===================")
 
-    print(f"Status: {result['status']}")
+    for result in quality_results:
+        print(f"\nCheck: {result['check_name']}")
+        print(f"Description: {result['description']}")
+        print(f"Records affected: {result['records_affected']}")
+
+        if "missing_cells" in result:
+            print(f"Missing cells: {result['missing_cells']}")
+
+        print(f"Status: {result['status']}")
+
+if __name__ == "__main__":
+    main()
