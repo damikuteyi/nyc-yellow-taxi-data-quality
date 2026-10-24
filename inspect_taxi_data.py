@@ -25,7 +25,6 @@ taxi_data["trip_duration_minutes"] = (
     - taxi_data["tpep_pickup_datetime"]
 ).dt.total_seconds() / 60
 
-
 # 3. Reusable data quality checks
 def check_negative_fares(df):
     negative_fares = df["fare_amount"] < 0

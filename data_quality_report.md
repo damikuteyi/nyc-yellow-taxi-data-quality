@@ -25,6 +25,18 @@ Each of these columns has missing values in approximately **15.54% of records**.
 
 **Finding:** The matching missing-value counts may indicate a shared pattern in the affected records. Further investigation is needed to determine whether these missing values have a common cause and whether they should be retained, imputed, or handled differently.
 
+### Missing-Value Pattern Investigation
+
+The five columns with missing values—`passenger_count`, `RatecodeID`, `store_and_fwd_flag`, `congestion_surcharge`, and `Airport_fee`—each contain 540,149 missing values.
+
+Further investigation established that all 540,149 rows with missing values across these five columns have `payment_type = 0`, which the TLC data dictionary identifies as Flex Fare. Conversely, all rows with `payment_type = 0` in this dataset have missing values in all five columns.
+
+This represents 100% of Flex Fare rows and approximately 15.54% of the complete dataset.
+
+The pattern suggests that the missing values are associated with the Flex Fare category. However, the observed association does not establish why the fields are missing or whether their absence is expected. Further validation against authoritative documentation is required before deciding how to handle these values.
+
+No records have been deleted or modified as a result of this investigation.
+
 ## 3. Fare and Distance Checks
 
 | Quality check | Records identified |
