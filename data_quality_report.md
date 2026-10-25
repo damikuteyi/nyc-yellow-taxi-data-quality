@@ -102,7 +102,7 @@ Each function returns a structured dictionary containing four fields:
 | `check_name` | Identifies the quality check |
 | `description` | Explains what the check measures |
 | `records_affected` | Records the number of rows matching the condition |
-| `status` | Indicates that the identified records require investigation |
+| `status` | Returns PASS when no records match the validation rule and WARNING when one or more records match it.|
 
 The results from the four checks are collected into a single list called `quality_results`. A Python loop then generates a consistent, human-readable report.
 
@@ -110,10 +110,14 @@ The results from the four checks are collected into a single list called `qualit
 
 | Quality check | Records identified | Status |
 |---|---:|---|
-| Negative fare amounts | 144,118 | Requires investigation |
-| Zero trip distances | 90,893 | Requires investigation |
-| Negative trip durations | 124 | Requires investigation |
-| Missing values | 2,700,745 missing cells| WARNING - one or more missing cells detected |
+| Negative fare amounts | 144,118 | WARNING |
+| Zero trip distances | 90,893 | WARNING |
+| Negative trip durations | 124 | WARNING |
+| Missing values | 540,149 affected rows; 2,700,745 missing cells | WARNING |
+
+A `WARNING` status means that one or more records matched the defined validation rule. It does not automatically mean that every flagged record is invalid.
+
+The missing-values check reports both affected rows and missing cells because a single row can contain missing values in multiple columns. The other checks report the number of records matching their respective conditions.
 
 ### Implementation Notes
 
@@ -122,21 +126,21 @@ The results from the four checks are collected into a single list called `qualit
 - Record counts are converted to standard Python integers to improve compatibility with reporting and serialization tools.
 - The checks identify potential anomalies but do not automatically delete or modify records.
 - The missing cells are not the same as distinct affected records, as a single trip can have missing values in multiple columns.
-- The missing-values check returns ´Pass´ when no missing cells are found and ´Warning´ when at least one missing cell is found
+- The missing-values check returns `Pass` when no missing cells are found and `Warning` when at least one missing cell is found
 
 These functions provide a foundation for extending the quality checks and integrating their results into a more automated data validation pipeline.
 
 ## 6. Findings and Next Steps
 
-The initial assessment identified three main areas for further investigation: missing values, unusual fare and distance values, and timestamp anomalies.
+The initial investigations have established several patterns, but some causes and implications remain unresolved.
 
 Recommended next steps:
 
-1. **Investigate missing values:** Check whether the five affected columns are missing together in the same records and explore possible explanations.
-2. **Investigate negative fares:** Examine their distribution by payment type and other relevant fields before deciding how to handle them.
-3. **Review zero-distance trips:** Look for patterns in fare amounts, duration, payment type, and pickup/drop-off locations.
-4. **Review negative durations:** Inspect the 124 affected records and determine whether the timestamp anomalies can be explained or corrected using reliable evidence.
-5. **Preserve the source data:** Keep the original dataset unchanged. Apply any future cleaning rules to a separate, documented transformation.
+1. **Validate missing-value interpretation:** Compare the observed Flex Fare pattern with authoritative documentation before deciding how to handle missing values.
+2. **Clarify negative-fare rules:** Establish the applicable fare and adjustment rules before classifying negative fares or reconciling their totals.
+3. **Investigate zero-distance trips:** Examine fare amounts, duration, payment type, and pickup/drop-off locations to understand the flagged records.
+4. **Review negative durations:** Inspect the 124 affected records and determine whether the timestamp anomalies can be explained using reliable evidence.
+5. **Preserve source data:** Keep the original dataset unchanged and apply any future cleaning rules to a separate, documented transformation.
 
 ## 7. Conclusion
 
