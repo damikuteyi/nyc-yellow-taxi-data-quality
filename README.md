@@ -37,6 +37,7 @@ nyc-yellow-taxi-data-quality/
 ├── inspect_taxi_data.py
 ├── investigate_missing_values.py
 ├── investigate_negative_fares.py
+├── test_data_quality.py
 ├── data_quality_report.md
 └── README.md
 ```
@@ -115,6 +116,27 @@ The script loads the dataset, calculates trip durations, and reports findings fr
 
 Additional investigation scripts examine missing-value patterns and negative fare records.
 
+## Automated Tests
+
+The project includes automated tests for the reusable data quality validation functions. The tests use Python's built-in `unittest` framework and small sample DataFrames, so they do not require loading the full taxi dataset.
+
+The test suite covers:
+
+- Counting negative fare amounts and handling cases with no negative fares.
+- Counting zero trip distances and handling cases with no zero distances.
+- Counting negative trip durations and handling cases with no negative durations.
+- Counting missing cells and affected rows, including datasets with no missing values.
+
+Run the tests from the project root:
+
+```bash
+python -m unittest discover -v
+```
+
+**Current test result:** 8 tests passed.
+
+The tests verify the expected behaviour of the validation functions for the scenarios covered. They do not guarantee that every possible data quality issue has been detected.
+
 ## Data Quality Approach
 
 The project follows a cautious data quality workflow:
@@ -131,18 +153,20 @@ The original source data is preserved. No records are automatically deleted or c
 
 ## Project Status
 
-**Completed so far**
+**Completed**
 
-- Initial dataset profiling
-- Reusable data quality checks
-- Missing-value investigation
-- Negative-fare investigation
-- Initial technical documentation
-- Dependency declaration in `requirements.txt`
+- Initial dataset profiling and data quality investigation.
+- Reusable validation functions for negative fares, zero distances, negative trip durations, and missing values.
+- Investigation of missing-value patterns and negative fare records.
+- Standardised `PASS` and `WARNING` statuses across the validation checks.
+- Automated test suite with eight passing tests.
+- Technical documentation and dependency declaration.
 
-**Remaining work**
+**Finalisation tasks**
 
-- Add automated tests for the validation functions.
-- Finalise the reproducible pipeline and setup documentation.
-- Review the report and repository for consistency.
-- Complete the project documentation and portfolio presentation.
+- Verify that a fresh environment can reproduce the documented setup and test results.
+- Review the data quality report and README for consistency.
+- Confirm the final changes are committed and pushed to GitHub.
+- Prepare the final portfolio demonstration and YouTube video.
+
+The project flags records for investigation rather than automatically deleting or correcting them.

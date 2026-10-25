@@ -6,54 +6,54 @@ PROJECT_DIR = Path(__file__).resolve().parent
 DATA_PATH = PROJECT_DIR / "data" / "yellow_tripdata_2025-01.parquet"
 
 # 3. Reusable data quality checks
+
 def check_negative_fares(df):
     negative_fares = df["fare_amount"] < 0
-    count = negative_fares.sum()
+    count = int(negative_fares.sum())
 
     return {
         "check_name": "negative_fares",
         "description": "Count trips with negative fare amounts",
-        "records_affected": int(count),
-        "status": "requires investigation",
+        "records_affected": count,
+        "status": "WARNING" if count > 0 else "PASS",
     }
 
+
 def check_zero_distances(df):
-    zero_distance_count = (df["trip_distance"] == 0).sum()
+    zero_distance_count = int((df["trip_distance"] == 0).sum())
 
     return {
         "check_name": "zero_trip_distances",
         "description": "Count trips with zero distances",
-        "records_affected": int(zero_distance_count),
-        "status": "requires investigation",
+        "records_affected": zero_distance_count,
+        "status": "WARNING" if zero_distance_count > 0 else "PASS",
     }
+
 
 def check_negative_durations(df):
     negative_duration = df["trip_duration_minutes"] < 0
-    count = negative_duration.sum()
+    count = int(negative_duration.sum())
 
     return {
         "check_name": "negative_trip_durations",
         "description": "Count trips with negative durations",
-        "records_affected": int(count),
-        "status": "requires investigation",
+        "records_affected": count,
+        "status": "WARNING" if count > 0 else "PASS",
     }
+
 
 def check_missing_values(df):
     missing_cells = int(df.isnull().sum().sum())
     affected_rows = int(df.isnull().any(axis=1).sum())
-
-    if missing_cells == 0:
-        status = "PASS"
-    else:
-        status = "WARNING"
 
     return {
         "check_name": "missing_values",
         "description": "Count missing cells and affected rows",
         "records_affected": affected_rows,
         "missing_cells": missing_cells,
-        "status": status,
+        "status": "WARNING" if affected_rows > 0 else "PASS",
     }
+
 
 def main():
     # 1. Load the dataset
